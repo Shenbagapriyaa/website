@@ -46,8 +46,8 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
     && sed -i '/<Directory \/var\/www\/html\/public>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf \
     || echo "<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>" >> /etc/apache2/apache2.conf
 
-# Enable Apache mod_rewrite for Laravel routing
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite, headers, and remoteip for reverse proxies (Render SSL termination)
+RUN a2enmod rewrite headers remoteip
 
 # Copy project files into container
 COPY . /var/www/html
@@ -57,8 +57,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 
 # Create SQLite database file if it doesn't exist and set permissions
 RUN touch /var/www/html/database/database.sqlite \
-    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database /var/www/html/public \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database /var/www/html/public
 
 # Expose Render Default Port
 EXPOSE 80
