@@ -1,59 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Track Tech Solution
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web platform built for apparel and textile manufacturing operations. The project provides product information, interactive factory tools, ROI estimation, and demo booking for garment digitization systems such as realtime sewing line tracking, RFID fabric control, and digital quality management.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. PHP 8.2 or newer
+2. Laravel 12
+3. Blade Templating Engine
+4. Tailwind CSS configured via browser runtime
+5. HTML5 Canvas and Vanilla JavaScript for interactive 3D elements
+6. SQLite Database
+7. Apache and Docker for containerized hosting
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Application Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Product Pages: Dedicated showcase pages for seven manufacturing solutions including Production Tracking System (PTS), Cutting Room Management (TrackCut), Fabric and Inventory Control, AI Quality Control, Maintenance and Asset Management, Worker Skill Matrix, and Central Analytics.
+2. Canvas Visuals: Pure HTML5 Canvas animations for background particle depth, mouse movement parallax, and interactive home page factory rendering without external 3D library dependencies.
+3. Interactive Utilities: Working ROI and waste reduction calculator with dynamic formula updates, five step factory process pipeline, and interactive system demonstration flow.
+4. Inquiry and Booking System: Form handling for quote requests, contact messages, and demo bookings. Submissions are validated and stored in the SQLite database with email notifications dispatched through Laravel Mail.
+5. Production Readiness: Preconfigured reverse proxy handling for HTTPS termination and Apache URL rewriting for platforms such as Render.
 
-## Learning Laravel
+## Project Structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+1. app/Http/Controllers: PageController handles route data and views, ContactController handles form submissions and notification emails.
+2. app/Models: Inquiry model for storing form submissions.
+3. database/migrations: Schema migration for the inquiries table.
+4. resources/views: Blade templates for home, product catalog, individual product details, about, case studies, demo, contact, and email templates.
+5. public/js: Canvas animation scripts for background visuals, factory rendering, and custom cursor tracking.
+6. public/css: Core style rules and layout definitions.
+7. Dockerfile: Container image definition for deployment.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Local Development Setup
 
-## Laravel Sponsors
+Prerequisites:
+1. PHP 8.2 or newer installed locally
+2. Composer package manager
+3. Git
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Setup Steps:
 
-### Premium Partners
+1. Clone the repository to your machine
+git clone https://github.com/yourusername/repository.git
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. Navigate into the project folder
+cd repository
 
-## Contributing
+3. Install PHP dependencies
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. Create your local environment file
+cp .env.example .env
 
-## Code of Conduct
+5. Generate the application encryption key
+php artisan key:generate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. Create the SQLite database file if it does not exist
+touch database/database.sqlite
 
-## Security Vulnerabilities
+7. Run database migrations
+php artisan migrate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+8. Start the local development server
+php artisan serve
 
-## License
+The application will be accessible at http://127.0.0.1:8000 in your browser.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Mail Configuration
+
+To send actual email confirmations for contact inquiries, update the following fields in your .env file:
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your_email@gmail.com
+MAIL_FROM_NAME="Track Tech Solution"
+
+If these values are left empty, inquiries will still save to the SQLite database successfully while email attempts are safely logged.
+
+## Docker and Deployment
+
+The project includes a Dockerfile configured for deployment on cloud services like Render.
+
+1. Base image uses official PHP 8.2 Apache.
+2. Required PHP extensions include pdo, pdo_sqlite, pdo_mysql, mbstring, exif, pcntl, bcmath, gd, zip, and opcache.
+3. Apache is configured to point its document root to the public folder with rewrite modules enabled.
+4. Reverse proxy SSL termination is supported via trusted proxy configuration in bootstrap/app.php.
+5. The container start command automatically binds to the port supplied by the host environment and applies database migrations.
