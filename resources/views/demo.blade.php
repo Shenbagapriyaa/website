@@ -7,14 +7,18 @@
 @section('content')
 
 <!-- Demo Hero -->
-<section style="padding: 4rem 0 3rem; position:relative;">
+<section style="padding: 4.5rem 0 3rem; position:relative;"
+         data-bg="#f8fafc"
+         data-glow-1="rgba(56, 189, 248, 0.25)"
+         data-glow-2="rgba(168, 85, 247, 0.2)"
+         data-glow-3="rgba(14, 165, 233, 0.18)">
     <div class="container">
-        <div style="max-width:800px; margin:0 auto; text-align:center;">
+        <div style="max-width:800px; margin:0 auto; text-align:center;" class="reveal-on-scroll">
             <span class="section-tag">Interactive Factory Twin</span>
-            <h1 style="font-size:clamp(2.5rem, 5vw, 3.8rem); font-weight:800; margin:1rem 0 1.25rem; line-height:1.1;">
+            <h1 class="hero-title" style="margin:1rem 0 1.25rem;">
                 Experience Track Tech in <span class="gradient-text">Real-Time 3D</span>
             </h1>
-            <p style="font-size:1.15rem; color:var(--text-secondary); line-height:1.7;">
+            <p style="font-size:1.18rem; color:var(--text-secondary); line-height:1.75;">
                 See how our digital platform transforms your fabric warehouse, spreading tables, sewing lines, and quality stations into a synchronized smart factory.
             </p>
         </div>
@@ -22,20 +26,32 @@
 </section>
 
 <!-- Demo Interactive Experience & Booking Form -->
-<section style="padding: 2rem 0 6rem; position:relative;">
+<section style="padding: 2rem 0 6rem; position:relative;"
+         data-bg="#f0f9ff"
+         data-glow-1="rgba(2, 132, 199, 0.25)"
+         data-glow-2="rgba(56, 189, 248, 0.2)"
+         data-glow-3="rgba(168, 85, 247, 0.18)">
     <div class="container">
-        <div style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:3rem; align-items:start;">
+        <div style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:3.5rem; align-items:start;">
 
             <!-- Left: Virtual Digital Twin Preview HUD -->
-            <div>
-                <div class="card-3d" style="padding:2rem; margin-bottom:2rem;">
+            <div class="reveal-fade-left">
+                <!-- Real-World Factory Hero Snapshot -->
+                <div class="real-product-image-wrap" style="height:260px; margin-bottom:1.5rem;">
+                    <img src="{{ asset('images/quality_control_real.jpg') }}" alt="Real-world garment factory digital telemetry tablet in action">
+                    <div class="real-product-overlay-tag">
+                        <span>● LIVE FACTORY FLOOR TELEMETRY</span>
+                    </div>
+                </div>
+
+                <div class="card-3d" style="padding:2.25rem; margin-bottom:2rem;">
                     <div class="card-3d-glare"></div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                        <div>
-                            <span class="live-pulse-dot" style="display:inline-block; margin-right:8px;"></span>
-                            <strong style="color:#fff; font-size:1.1rem;">Virtual Floor Telemetry Simulation</strong>
+                        <div style="display:flex; align-items:center; gap:0.6rem;">
+                            <span class="live-pulse-dot"></span>
+                            <strong style="color:var(--text-heading); font-size:1.1rem;">Virtual Floor Telemetry Simulation</strong>
                         </div>
-                        <span style="font-size:0.75rem; color:var(--accent-cyan); background:rgba(0,240,255,0.1); padding:0.25rem 0.6rem; border-radius:var(--radius-full); font-weight:700;">
+                        <span style="font-size:0.78rem; color:var(--brand-sky); background:var(--brand-sky-bg); padding:0.25rem 0.65rem; border-radius:var(--radius-full); font-weight:700;">
                             LIVE REPLICA
                         </span>
                     </div>
@@ -43,131 +59,130 @@
                     <!-- Simulated Line Status Blocks -->
                     <div style="display:flex; flex-direction:column; gap:1rem;">
                         <!-- Line 01 -->
-                        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:1rem; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1.2rem; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <div style="font-weight:700; color:#fff; font-size:0.95rem;">Sewing Line #01 (Polo Shirts)</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Operator Count: 44 · Target: 120 pcs/hr</div>
+                                <div style="font-weight:700; color:var(--text-heading); font-size:0.98rem;">Sewing Line #01 (Polo Shirts)</div>
+                                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:0.25rem;">Operator Count: 44 · Target: 120 pcs/hr</div>
                             </div>
                             <div style="text-align:right;">
-                                <div style="font-size:1.2rem; font-weight:800; color:var(--accent-emerald);">94.2% Eff</div>
-                                <div style="font-size:0.75rem; color:var(--accent-emerald);">● Optimal Flow</div>
+                                <div style="font-size:1.25rem; font-weight:800; color:var(--brand-emerald);">94.2% Eff</div>
+                                <div style="font-size:0.78rem; color:var(--brand-emerald); font-weight:700;">● Optimal Flow</div>
                             </div>
                         </div>
 
                         <!-- Line 02 -->
-                        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:1rem; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1.2rem; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <div style="font-weight:700; color:#fff; font-size:0.95rem;">Sewing Line #02 (Denim Jacket)</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Operator Count: 52 · Target: 85 pcs/hr</div>
+                                <div style="font-weight:700; color:var(--text-heading); font-size:0.98rem;">Sewing Line #02 (Denim Jacket)</div>
+                                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:0.25rem;">Operator Count: 52 · Target: 85 pcs/hr</div>
                             </div>
                             <div style="text-align:right;">
-                                <div style="font-size:1.2rem; font-weight:800; color:var(--accent-amber);">78.6% Eff</div>
-                                <div style="font-size:0.75rem; color:var(--accent-amber);">▲ Rebalance Needed</div>
+                                <div style="font-size:1.25rem; font-weight:800; color:var(--brand-amber);">78.6% Eff</div>
+                                <div style="font-size:0.78rem; color:var(--brand-amber); font-weight:700;">▲ Rebalance Needed</div>
                             </div>
                         </div>
 
                         <!-- Line 03 -->
-                        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:1rem; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1.2rem; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <div style="font-weight:700; color:#fff; font-size:0.95rem;">Cutting Room Supermarket</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Auto-Spread Table #03 · Lay Count: 80 Plies</div>
+                                <div style="font-weight:700; color:var(--text-heading); font-size:0.98rem;">Cutting Room Supermarket</div>
+                                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:0.25rem;">Auto-Spread Table #03 · Lay Count: 80 Plies</div>
                             </div>
                             <div style="text-align:right;">
-                                <div style="font-size:1.2rem; font-weight:800; color:var(--accent-cyan);">98.8% Yield</div>
-                                <div style="font-size:0.75rem; color:var(--accent-cyan);">● Tagged & Staged</div>
+                                <div style="font-size:1.25rem; font-weight:800; color:var(--brand-sky);">98.8% Yield</div>
+                                <div style="font-size:0.78rem; color:var(--brand-sky); font-weight:700;">● Tagged & Staged</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- What you will see in the live session -->
-                <div class="card-3d" style="padding:2rem;">
+                <!-- Live Walkthrough Points -->
+                <div class="card-3d" style="padding:2.25rem;">
                     <div class="card-3d-glare"></div>
-                    <h3 style="font-size:1.25rem; margin-bottom:1rem;">What You Will Experience in the Live Demo:</h3>
-                    <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
-                        <li style="display:flex; align-items:flex-start; gap:0.65rem; color:var(--text-secondary); font-size:0.95rem;">
-                            <span style="color:var(--accent-cyan); font-weight:bold;">✓</span>
+                    <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:1.1rem; color:var(--text-heading);">What You Will Experience in the Live Demo:</h3>
+                    <ul style="list-style:none; display:flex; flex-direction:column; gap:0.9rem;">
+                        <li style="display:flex; align-items:flex-start; gap:0.75rem; color:var(--text-secondary); font-size:0.94rem;">
+                            <span style="color:var(--brand-sky); font-weight:bold;">✓</span>
                             <span>Live tablet interface walkthrough showing how floor operators scan bundles in &lt; 1 second.</span>
                         </li>
-                        <li style="display:flex; align-items:flex-start; gap:0.65rem; color:var(--text-secondary); font-size:0.95rem;">
-                            <span style="color:var(--accent-cyan); font-weight:bold;">✓</span>
+                        <li style="display:flex; align-items:flex-start; gap:0.75rem; color:var(--text-secondary); font-size:0.94rem;">
+                            <span style="color:var(--brand-sky); font-weight:bold;">✓</span>
                             <span>Executive dashboard overview showing multi-plant efficiency, WIP value, and bottleneck alerts.</span>
                         </li>
-                        <li style="display:flex; align-items:flex-start; gap:0.65rem; color:var(--text-secondary); font-size:0.95rem;">
-                            <span style="color:var(--accent-cyan); font-weight:bold;">✓</span>
+                        <li style="display:flex; align-items:flex-start; gap:0.75rem; color:var(--text-secondary); font-size:0.94rem;">
+                            <span style="color:var(--brand-sky); font-weight:bold;">✓</span>
                             <span>AI Quality heatmap demonstration showing how defects are flagged to prevent bulk packing errors.</span>
-                        </li>
-                        <li style="display:flex; align-items:flex-start; gap:0.65rem; color:var(--text-secondary); font-size:0.95rem;">
-                            <span style="color:var(--accent-cyan); font-weight:bold;">✓</span>
-                            <span>Hardware compatibility check for your existing sewing machines (Juki, Brother, Jack, Pegasus).</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Right: Booking Form -->
-            <div class="card-3d" style="border-color:var(--border-glow); box-shadow:var(--shadow-3d); padding:2.5rem;">
-                <div class="card-3d-glare"></div>
-                <h3 style="font-size:1.6rem; margin-bottom:0.5rem;">Book Your <span class="gradient-text">Live 1-on-1 Demo</span></h3>
-                <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:2rem;">
-                    Select your preferred time and tell us about your production lines.
-                </p>
+            <!-- Right: Interactive Booking Form -->
+            <div class="reveal-fade-right">
+                <div class="card-3d" style="padding:2.75rem;">
+                    <div class="card-3d-glare"></div>
+                    <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:0.5rem; color:var(--text-heading);">Schedule Your Private Session</h2>
+                    <p style="font-size:0.94rem; color:var(--text-muted); margin-bottom:2rem;">
+                        Personalized to your garment category, production line scale, and current floor setup.
+                    </p>
 
-                <form action="{{ route('contact.submit') }}" method="POST" class="ajax-inquiry-form">
-                    @csrf
-                    <input type="hidden" name="type" value="demo">
+                    <form action="{{ route('contact.submit') }}" method="POST" style="display:flex; flex-direction:column; gap:1.35rem;">
+                        @csrf
+                        <input type="hidden" name="inquiry_type" value="3D Demo Request">
 
-                    <div class="form-group">
-                        <label class="form-label">Full Name *</label>
-                        <input type="text" name="name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                        <div class="form-group">
-                            <label class="form-label">Work Email *</label>
-                            <input type="email" name="email" class="form-control" placeholder="name@company.com" required>
+                        <div>
+                            <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Full Name *</label>
+                            <input type="text" name="name" required placeholder="e.g. Rajesh Kumar" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Phone Number *</label>
-                            <input type="text" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div>
+                                <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Work Email *</label>
+                                <input type="email" name="email" required placeholder="name@apparel.com" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Phone / WhatsApp *</label>
+                                <input type="tel" name="phone" required placeholder="+91 98765 43210" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
+                            </div>
                         </div>
-                    </div>
 
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                        <div class="form-group">
-                            <label class="form-label">Factory / Company</label>
-                            <input type="text" name="company" class="form-control" placeholder="e.g. Shahi / Arvind Unit" required>
+                        <div>
+                            <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Company / Factory Name *</label>
+                            <input type="text" name="company" required placeholder="e.g. Apex Garments Ltd" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Number of Lines</label>
-                            <input type="number" name="factory_lines" class="form-control" placeholder="e.g. 24" min="1">
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div>
+                                <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Factory Location</label>
+                                <input type="text" name="location" placeholder="e.g. Tirupur / Dhaka" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Number of Sewing Lines</label>
+                                <select name="lines_count" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
+                                    <option value="1-10 Lines">1 - 10 Lines</option>
+                                    <option value="11-30 Lines" selected>11 - 30 Lines</option>
+                                    <option value="31-60 Lines">31 - 60 Lines</option>
+                                    <option value="60+ Lines">60+ Lines (Enterprise)</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Primary Module You Want to See</label>
-                        <select name="solution_interest" class="form-control" style="background:#0f172a;">
-                            <option value="Complete Factory Demo">Full End-to-End Smart Factory Demo</option>
-                            <option value="Production Tracking">Production Tracking & Line Balancing (PTS)</option>
-                            <option value="Quality Control">AI Quality Control & 4-Point Audits (QMS)</option>
-                            <option value="Fabric Inventory & Cutting">Fabric Warehouse & Cutting Room Suite</option>
-                            <option value="Machine Maintenance">Machine Maintenance & OEE Suite</option>
-                            <option value="Industrial IoT Hardware">Industrial IoT Terminals & Sensors</option>
-                        </select>
-                    </div>
+                        <div>
+                            <label style="display:block; font-size:0.88rem; font-weight:700; color:var(--text-heading); margin-bottom:0.4rem;">Key Focus Area</label>
+                            <select name="primary_interest" style="width:100%; padding:0.9rem 1.2rem; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-size:0.95rem; color:var(--text-heading); outline:none;">
+                                <option value="Production Line Tracking (PTS)">Real-time Sewing Line Tracking (PTS)</option>
+                                <option value="AI Quality Control (QMS)">AI Quality Management (QMS)</option>
+                                <option value="Fabric & Cutting Digitisation">Fabric Inventory & Cutting Room Digitisation</option>
+                                <option value="Complete MES Platform">Full End-to-End Smart Factory Suite</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Specific Challenges or Notes</label>
-                        <textarea name="message" class="form-control" placeholder="Mention any specific ERP sync or machine types you use..." rows="3"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-3d btn-primary-3d" style="width:100%; padding:0.9rem; font-size:1rem; margin-top:0.5rem;">
-                        <span>Confirm Demo Reservation</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </button>
-                </form>
+                        <button type="submit" class="btn-3d btn-primary-3d" style="width:100%; padding:1.05rem; font-size:1.08rem; margin-top:0.5rem;">
+                            <span>Confirm & Schedule 3D Demo</span>
+                        </button>
+                    </form>
+                </div>
             </div>
-
         </div>
     </div>
 </section>

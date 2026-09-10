@@ -6,9 +6,13 @@
 
 @section('content')
 
-<section style="padding: 4rem 0 2rem; position:relative;">
+<section style="padding: 4.5rem 0 2rem; position:relative;"
+         data-bg="#f8fafc"
+         data-glow-1="rgba(56, 189, 248, 0.25)"
+         data-glow-2="rgba(168, 85, 247, 0.2)"
+         data-glow-3="rgba(14, 165, 233, 0.18)">
     <div class="container">
-        <div class="section-header-3d">
+        <div class="section-header-3d reveal-on-scroll">
             <span class="section-tag">Enterprise Software & IoT Suite</span>
             <h1 class="section-title">Smart Manufacturing <span class="gradient-text">Solutions</span></h1>
             <p class="section-subtitle">
@@ -17,55 +21,57 @@
         </div>
 
         <!-- Solutions Grid -->
-        <div class="solutions-grid" style="margin-top:3rem;">
+        <div class="solutions-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:2.25rem; margin-top:3.5rem;">
             @foreach($solutions as $key => $item)
-            <div class="card-3d-wrap">
-                <div class="card-3d">
+            <div class="card-3d-wrap reveal-on-scroll">
+                <div class="card-3d" style="height:100%; display:flex; flex-direction:column; padding:2rem;">
                     <div class="card-3d-glare"></div>
 
-                    <div class="solution-card-header">
-                        <div class="solution-icon-wrap" style="color:{{ $item['accent'] }}; border-color:{{ $item['accent'] }}40; background:{{ $item['accent'] }}15;">
-                            @if($item['icon'] == 'check-circle')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            @elseif($item['icon'] == 'activity')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                            @elseif($item['icon'] == 'cpu')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/></svg>
-                            @elseif($item['icon'] == 'calendar')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            @elseif($item['icon'] == 'archive')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                            @elseif($item['icon'] == 'scissors')
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-                            @else
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
-                            @endif
-                        </div>
-
-                        <div class="solution-metric-badge">
-                            <div class="solution-metric-num" style="color:{{ $item['accent'] }};">{{ $item['highlight_metric'] }}</div>
-                            <div class="solution-metric-lbl">{{ $item['highlight_label'] }}</div>
+                    <!-- Real Image Thumbnail Preview -->
+                    <div class="real-product-image-wrap" style="height:170px; margin-bottom:1.5rem;">
+                        @if($key === 'quality-control')
+                            <img src="{{ asset('images/quality_control_real.jpg') }}" alt="{{ $item['title'] }}">
+                        @elseif($key === 'fabric-inventory')
+                            <img src="{{ asset('images/fabric_inventory_real.jpg') }}" alt="{{ $item['title'] }}">
+                        @elseif($key === 'cutting-room')
+                            <img src="{{ asset('images/cutting_room_real.jpg') }}" alt="{{ $item['title'] }}">
+                        @else
+                            <img src="{{ asset('images/production_tracking_real.jpg') }}" alt="{{ $item['title'] }}">
+                        @endif
+                        <div class="real-product-overlay-tag" style="top:0.6rem; left:0.6rem; font-size:0.75rem;">
+                            <span>{{ $item['badge'] }}</span>
                         </div>
                     </div>
 
-                    <h3 class="solution-title">{{ $item['title'] }}</h3>
-                    <p class="solution-desc">{{ $item['short_description'] }}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+                        <div>
+                            <h3 style="font-size:1.35rem; font-weight:800; color:var(--text-heading); margin-bottom:0.25rem;">{{ $item['title'] }}</h3>
+                            <div style="font-size:0.8rem; color:{{ $item['accent'] }}; font-weight:700;">{{ $item['tagline'] ?? '' }}</div>
+                        </div>
 
-                    <!-- Key features list preview -->
-                    <ul style="list-style:none; margin-bottom:1.5rem; display:flex; flex-direction:column; gap:0.4rem;">
+                        <div style="text-align:right;">
+                            <div style="font-size:1.35rem; font-weight:800; font-family:var(--font-display); color:{{ $item['accent'] }}; line-height:1;">{{ $item['highlight_metric'] }}</div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-top:0.2rem;">{{ $item['highlight_label'] }}</div>
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.65; margin-bottom:1.5rem;">{{ $item['short_description'] }}</p>
+
+                    <!-- Key features preview -->
+                    <ul style="list-style:none; margin-bottom:1.75rem; display:flex; flex-direction:column; gap:0.5rem;">
                         @foreach(array_slice($item['features'], 0, 3) as $feat)
-                        <li style="font-size:0.85rem; color:var(--text-secondary); display:flex; align-items:center; gap:0.5rem;">
+                        <li style="font-size:0.88rem; color:var(--text-secondary); display:flex; align-items:center; gap:0.5rem;">
                             <span style="color:{{ $item['accent'] }}; font-weight:bold;">✓</span>
                             <span>{{ $feat['title'] }}</span>
                         </li>
                         @endforeach
                     </ul>
 
-                    <div class="solution-card-footer">
-                        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">{{ $item['badge'] }}</span>
-                        <a href="{{ route('products.show', $item['slug']) }}" class="card-link-arrow">
+                    <div style="margin-top:auto; padding-top:1.25rem; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Verified Module</span>
+                        <a href="{{ route('products.show', $item['slug']) }}" class="btn-3d btn-secondary-3d" style="padding:0.45rem 1.15rem; font-size:0.88rem;">
                             <span>Deep Dive</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>
                     </div>
                 </div>
@@ -76,14 +82,20 @@
 </section>
 
 <!-- Call to action block -->
-<section style="padding: 4rem 0 6rem;">
+<section style="padding: 4rem 0 6rem; position:relative;"
+         data-bg="#f0f9ff"
+         data-glow-1="rgba(2, 132, 199, 0.25)"
+         data-glow-2="rgba(168, 85, 247, 0.2)"
+         data-glow-3="rgba(14, 165, 233, 0.18)">
     <div class="container">
-        <div class="cta-box-3d" style="padding:3rem 2rem;">
-            <h3>Need a Customized Solution Package for Your Factory?</h3>
-            <p style="color:var(--text-secondary); max-width:600px; margin:0.75rem auto 1.5rem;">
-                Our technical consultants will review your factory machinery, layout, and buyer compliance standards to build a custom implementation roadmap.
-            </p>
-            <a href="{{ route('contact') }}" class="btn-3d btn-primary-3d">Schedule Technical Assessment</a>
+        <div class="card-gradient-border reveal-on-scroll">
+            <div class="card-gradient-inner" style="padding:4rem 2rem; text-align:center;">
+                <h3 style="font-size:2.2rem; font-weight:800; color:var(--text-heading); margin-bottom:0.75rem;">Need a Customized Solution Package for Your Factory?</h3>
+                <p style="color:var(--text-muted); max-width:640px; margin:0 auto 2.25rem; font-size:1.1rem; line-height:1.75;">
+                    Our technical consultants will review your factory machinery, layout, and compliance standards to build a custom implementation roadmap.
+                </p>
+                <a href="{{ route('contact') }}" class="btn-3d btn-primary-3d">Schedule Technical Assessment</a>
+            </div>
         </div>
     </div>
 </section>

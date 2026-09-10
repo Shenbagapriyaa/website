@@ -1,6 +1,6 @@
 /**
- * Track Tech Solution - 3D Isometric Factory Blueprint Engine
- * Pure HTML5 Canvas + JavaScript (No Three.js)
+ * Track Tech Solution - Interactive 3D Factory Blueprint & Telemetry Stage
+ * Clean Luxury Light Theme with Isometric Floating Nodes & Real-time Flow
  */
 
 (function() {
@@ -10,18 +10,17 @@
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  let width = (canvas.width = canvas.parentElement.clientWidth || 500);
-  let height = (canvas.height = canvas.parentElement.clientHeight || 480);
+  let width = (canvas.width = canvas.parentElement.clientWidth || 540);
+  let height = (canvas.height = canvas.parentElement.clientHeight || 500);
 
   let mouseX = 0;
   let mouseY = 0;
   let rotAngle = 0;
 
-  // Track cursor relative to stage
   window.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
-    mouseX = ((e.clientX - rect.left) / width - 0.5) * 2;
-    mouseY = ((e.clientY - rect.top) / height - 0.5) * 2;
+    mouseX = ((e.clientX - rect.left) / width - 0.5) * 1.5;
+    mouseY = ((e.clientY - rect.top) / height - 0.5) * 1.5;
   });
 
   window.addEventListener('resize', () => {
@@ -30,164 +29,168 @@
     height = canvas.height = canvas.parentElement.clientHeight;
   });
 
-  // Isometric 3D Projection Helper
+  // Isometric 3D Projection
   function projectIso(x, y, z, angle) {
-    // Y-rotation
-    const rad = angle;
-    const cos = Math.cos(rad);
-    const sin = Math.sin(rad);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
 
     const rx = x * cos - z * sin;
     const rz = x * sin + z * cos;
 
-    // Isometric projection
-    const isoX = width / 2 + rx * 1.5 - rz * 1.5 + mouseX * 25;
-    const isoY = height / 2 + (rx * 0.75 + rz * 0.75) * 0.85 - y * 1.6 + mouseY * 20;
+    const isoX = width / 2 + (rx - rz) * 1.3 + mouseX * 20;
+    const isoY = height / 2 + (rx + rz) * 0.65 - y * 1.4 + mouseY * 15;
 
     return { x: isoX, y: isoY, z: rz };
   }
 
-  // Draw 3D Isometric Line
-  function drawIsoLine(p1, p2, color = 'rgba(0, 240, 255, 0.4)', lineWidth = 1) {
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = lineWidth;
-    ctx.stroke();
+  // Factory Nodes / Production Stages
+  const nodes = [
+    { label: 'Fabric Inward (FIM)', x: -100, y: 0, z: -80, color: '#0284c7', icon: '📦', metric: '99.4% Sync' },
+    { label: 'Auto Cutting Table', x: 0, y: 15, z: -80, color: '#8b5cf6', icon: '✂️', metric: '98.8% Yield' },
+    { label: 'Sewing Line Alpha', x: -100, y: 0, z: 60, color: '#0ea5e9', icon: '🧵', metric: '94.2% Eff' },
+    { label: 'Sewing Line Beta', x: 0, y: 0, z: 60, color: '#0ea5e9', icon: '🧵', metric: '91.8% Eff' },
+    { label: 'AI Quality Station (QMS)', x: 100, y: 25, z: -10, color: '#10b981', icon: '🔍', metric: '0.4% Defect' },
+    { label: 'Cloud Executive Hub', x: 0, y: 85, z: -10, color: '#6366f1', icon: '⚡', metric: 'Real-Time' }
+  ];
+
+  // Animated Data Packets
+  const packets = [];
+  for (let i = 0; i < 8; i++) {
+    packets.push({
+      fromNode: Math.floor(Math.random() * (nodes.length - 1)),
+      toNode: 5, // Stream up to Cloud Hub
+      progress: Math.random(),
+      speed: 0.008 + Math.random() * 0.012
+    });
   }
 
-  // Draw 3D Isometric Box (Factory Station)
-  function drawIsoStation(cx, cy, cz, w, h, d, label, color = '#00f0ff', angle = 0, time = 0) {
-    const hw = w / 2;
-    const hd = d / 2;
-
-    const v = [
-      projectIso(cx - hw, cy, cz - hd, angle),
-      projectIso(cx + hw, cy, cz - hd, angle),
-      projectIso(cx + hw, cy, cz + hd, angle),
-      projectIso(cx - hw, cy, cz + hd, angle),
-      projectIso(cx - hw, cy + h, cz - hd, angle),
-      projectIso(cx + hw, cy + h, cz - hd, angle),
-      projectIso(cx + hw, cy + h, cz + hd, angle),
-      projectIso(cx - hw, cy + h, cz + hd, angle)
-    ];
-
-    // Top Face
-    ctx.beginPath();
-    ctx.moveTo(v[4].x, v[4].y);
-    ctx.lineTo(v[5].x, v[5].y);
-    ctx.lineTo(v[6].x, v[6].y);
-    ctx.lineTo(v[7].x, v[7].y);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(10, 25, 55, 0.85)';
-    ctx.fill();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
-
-    // Side Faces
-    ctx.beginPath();
-    ctx.moveTo(v[7].x, v[7].y);
-    ctx.lineTo(v[6].x, v[6].y);
-    ctx.lineTo(v[2].x, v[2].y);
-    ctx.lineTo(v[3].x, v[3].y);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(6, 15, 35, 0.9)';
-    ctx.fill();
-    ctx.stroke();
-
-    // Pulse core
-    const centerTop = {
-      x: (v[4].x + v[6].x) / 2,
-      y: (v[4].y + v[6].y) / 2
-    };
-
-    ctx.beginPath();
-    ctx.arc(centerTop.x, centerTop.y, 3 + Math.sin(time * 3 + cx) * 1.2, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 8;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // Label
-    ctx.font = '10px "Space Grotesk", sans-serif';
-    ctx.fillStyle = '#cbd5e1';
-    ctx.textAlign = 'center';
-    ctx.fillText(label, centerTop.x, centerTop.y - 12);
-  }
-
-  // Animation Loop
   let time = 0;
-  function render() {
-    time += 0.015;
-    rotAngle = time * 0.4 + mouseX * 0.3;
 
+  function drawStage() {
     ctx.clearRect(0, 0, width, height);
+    time += 0.02;
+    rotAngle = Math.sin(time * 0.3) * 0.12;
 
-    // 1. Draw 3D Isometric Grid Floor
-    const gridSize = 4;
-    const spacing = 35;
-    for (let gx = -gridSize; gx <= gridSize; gx++) {
-      const p1 = projectIso(gx * spacing, 0, -gridSize * spacing, rotAngle);
-      const p2 = projectIso(gx * spacing, 0, gridSize * spacing, rotAngle);
-      drawIsoLine(p1, p2, 'rgba(0, 240, 255, 0.12)', 1);
+    // Draw Light Isometric Grid Base
+    ctx.strokeStyle = 'rgba(226, 232, 240, 0.75)';
+    ctx.lineWidth = 1;
+    const gridSize = 140;
+    const gridStep = 35;
 
-      const p3 = projectIso(-gridSize * spacing, 0, gx * spacing, rotAngle);
-      const p4 = projectIso(gridSize * spacing, 0, gx * spacing, rotAngle);
-      drawIsoLine(p3, p4, 'rgba(0, 240, 255, 0.12)', 1);
+    for (let gx = -gridSize; gx <= gridSize; gx += gridStep) {
+      const p1 = projectIso(gx, 0, -gridSize, rotAngle);
+      const p2 = projectIso(gx, 0, gridSize, rotAngle);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    for (let gz = -gridSize; gz <= gridSize; gz += gridStep) {
+      const p1 = projectIso(-gridSize, 0, gz, rotAngle);
+      const p2 = projectIso(gridSize, 0, gz, rotAngle);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
     }
 
-    // 2. Draw 5 Smart Production Floor Stations
-    const stations = [
-      { x: -75, z: -75, label: 'Fabric Inward', color: '#10b981' },
-      { x: 75, z: -75, label: 'Cutting CAD', color: '#f59e0b' },
-      { x: 0, z: 0, label: 'Sewing Line 01', color: '#00f0ff' },
-      { x: -75, z: 75, label: 'AI QC Station', color: '#38bdf8' },
-      { x: 75, z: 75, label: 'Finishing OEE', color: '#a855f7' }
+    // Draw Connection Pipelines between Nodes
+    const links = [
+      [0, 1], [1, 2], [1, 3], [2, 4], [3, 4], [4, 5], [0, 5], [1, 5]
     ];
 
-    stations.forEach(s => {
-      drawIsoStation(s.x, 0, s.z, 28, 16, 28, s.label, s.color, rotAngle, time);
-    });
+    links.forEach(([fromIdx, toIdx]) => {
+      const n1 = nodes[fromIdx];
+      const n2 = nodes[toIdx];
+      const p1 = projectIso(n1.x, n1.y, n1.z, rotAngle);
+      const p2 = projectIso(n2.x, n2.y, n2.z, rotAngle);
 
-    // 3. Connect Stations with Laser Data Lines & Traveling Pulses
-    for (let i = 0; i < stations.length - 1; i++) {
-      const pA = projectIso(stations[i].x, 16, stations[i].z, rotAngle);
-      const pB = projectIso(stations[i + 1].x, 16, stations[i + 1].z, rotAngle);
-      drawIsoLine(pA, pB, 'rgba(0, 240, 255, 0.3)', 1);
-
-      // Pulse particle
-      const pulseProg = (time * 1.5 + i * 0.25) % 1;
-      const px = pA.x + (pB.x - pA.x) * pulseProg;
-      const py = pA.y + (pB.y - pA.y) * pulseProg;
+      // Gradient Pipeline
+      const lineGrad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+      lineGrad.addColorStop(0, n1.color);
+      lineGrad.addColorStop(1, n2.color);
 
       ctx.beginPath();
-      ctx.arc(px, py, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.shadowColor = '#00f0ff';
-      ctx.shadowBlur = 10;
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.strokeStyle = lineGrad;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    // Draw Flowing Data Packets
+    packets.forEach(packet => {
+      packet.progress += packet.speed;
+      if (packet.progress >= 1) {
+        packet.progress = 0;
+        packet.fromNode = Math.floor(Math.random() * (nodes.length - 1));
+      }
+
+      const n1 = nodes[packet.fromNode];
+      const n2 = nodes[packet.toNode];
+      const p1 = projectIso(n1.x, n1.y, n1.z, rotAngle);
+      const p2 = projectIso(n2.x, n2.y, n2.z, rotAngle);
+
+      const px = p1.x + (p2.x - p1.x) * packet.progress;
+      const py = p1.y + (p2.y - p1.y) * packet.progress;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#0ea5e9';
+      ctx.shadowColor = 'rgba(14, 165, 233, 0.8)';
+      ctx.shadowBlur = 8;
       ctx.fill();
       ctx.shadowBlur = 0;
-    }
+    });
 
-    // 4. Scanning Radar Ring
-    const radarRadius = 110;
-    const rProg = (time * 0.8) % 1;
-    const curRad = radarRadius * rProg;
-    const ringCenter = projectIso(0, 0, 0, rotAngle);
+    // Draw 3D Stations / Nodes
+    nodes.forEach((node, idx) => {
+      const bob = Math.sin(time * 2 + idx) * 4;
+      const pos = projectIso(node.x, node.y + bob, node.z, rotAngle);
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(ringCenter.x, ringCenter.y, curRad * 1.4, curRad * 0.7, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(0, 240, 255, ${(1 - rProg) * 0.4})`;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.restore();
+      // Station Base Shadow
+      const shadowPos = projectIso(node.x, 0, node.z, rotAngle);
+      ctx.beginPath();
+      ctx.ellipse(shadowPos.x, shadowPos.y, 18, 9, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
+      ctx.fill();
 
-    requestAnimationFrame(render);
+      // Station Card / Node Pill
+      ctx.save();
+      ctx.translate(pos.x, pos.y);
+
+      // Glowing Node Center
+      ctx.beginPath();
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = node.color;
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = 'rgba(14, 165, 233, 0.25)';
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Icon
+      ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(node.icon, 0, 1);
+
+      // Label & Telemetry Badge
+      ctx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText(node.label, 0, -28);
+
+      ctx.font = '9px "Space Grotesk", sans-serif';
+      ctx.fillStyle = node.color;
+      ctx.fillText(node.metric, 0, 32);
+
+      ctx.restore();
+    });
+
+    requestAnimationFrame(drawStage);
   }
 
-  render();
+  drawStage();
 })();
