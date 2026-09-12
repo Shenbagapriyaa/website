@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const glow3 = entry.target.getAttribute('data-glow-3');
 
           if (bg) root.style.setProperty('--theme-bg', bg);
-          if (glow1) root.style.setProperty('--theme-glow-1', glow1);
-          if (glow2) root.style.setProperty('--theme-glow-2', glow2);
-          if (glow3) root.style.setProperty('--theme-glow-3', glow3);
+          if (glow1 || glow2 || glow3) root.style.setProperty('--theme-glow-1', 'rgba(14, 165, 233, 0.12)');
+          if (glow1 || glow2 || glow3) root.style.setProperty('--theme-glow-2', 'rgba(99, 102, 241, 0.1)');
+          if (glow1 || glow2 || glow3) root.style.setProperty('--theme-glow-3', 'rgba(2, 132, 199, 0.09)');
         }
       });
     }, {
@@ -32,6 +32,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     morphSections.forEach(sec => bgObserver.observe(sec));
+  }
+
+  // Keep the desktop navigation aligned with the section currently in view.
+  const scrollNavLinks = document.querySelectorAll('.nav-link[data-scroll-target]');
+  const scrollNavSections = Array.from(scrollNavLinks)
+    .map(link => document.getElementById(link.getAttribute('data-scroll-target')))
+    .filter(Boolean);
+
+  if (scrollNavSections.length > 0) {
+    let navTicking = false;
+    const updateScrollNav = () => {
+      if (navTicking) return;
+      navTicking = true;
+      window.requestAnimationFrame(() => {
+        const anchorLine = window.innerHeight * 0.34;
+        const passedSections = scrollNavSections
+          .map(section => ({ section, top: section.getBoundingClientRect().top }))
+          .filter(item => item.top <= anchorLine)
+          .sort((first, second) => second.top - first.top);
+
+        const activeSection = passedSections[0]?.section || scrollNavSections[0];
+        scrollNavLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('data-scroll-target') === activeSection.id);
+        });
+        navTicking = false;
+      });
+    };
+
+    window.addEventListener('scroll', updateScrollNav, { passive: true });
+    window.addEventListener('resize', updateScrollNav);
+    updateScrollNav();
   }
 
   // ==========================================
@@ -190,6 +221,26 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCalculator();
   }
 
+  // Draw the factory journey route as the user moves through it.
+  const journey = document.querySelector('.factory-journey');
+  const journeyPath = document.querySelector('.journey-route-progress');
+
+  if (journey && journeyPath) {
+    const pathLength = journeyPath.getTotalLength();
+    journeyPath.style.strokeDasharray = pathLength;
+    journeyPath.style.strokeDashoffset = pathLength;
+
+    const updateJourney = () => {
+      const rect = journey.getBoundingClientRect();
+      const travel = Math.min(Math.max((window.innerHeight * 0.72 - rect.top) / rect.height, 0), 1);
+      journeyPath.style.strokeDashoffset = pathLength * (1 - travel);
+    };
+
+    updateJourney();
+    window.addEventListener('scroll', updateJourney, { passive: true });
+    window.addEventListener('resize', updateJourney);
+  }
+
   // ==========================================
   // 7. HEADER SCROLL & MOBILE DRAWER
   // ==========================================
@@ -217,4 +268,28 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileDrawer.classList.remove('open');
     });
   }
+
+  // ==========================================
+  // 8. VECTRFL-STYLE SMOOTH SCROLL PARALLAX DEPTH
+  // ==========================================
+  const parallaxNodes = document.querySelectorAll('.card-3d, .real-product-image-wrap');
+  let ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        parallaxNodes.forEach((node, index) => {
+          const rect = node.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const depth = (index % 3 + 1) * 0.035;
+            const yOffset = (rect.top - window.innerHeight / 2) * depth;
+            node.style.setProperty('--scroll-parallax-y', `${yOffset.toFixed(1)}px`);
+          }
+        });
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
 });
+

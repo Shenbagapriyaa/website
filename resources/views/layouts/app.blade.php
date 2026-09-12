@@ -57,44 +57,28 @@
 </head>
 <body class="bg-[#f8fafc] text-slate-900 selection:bg-sky-500/20 selection:text-sky-900">
 
-    <!-- Vectrfl-style Caustic Ambient Water & Light Mesh Backdrop -->
-    <div class="ambient-scene-backdrop">
-        <div class="caustic-glow caustic-1"></div>
-        <div class="caustic-glow caustic-2"></div>
-        <div class="caustic-glow caustic-3"></div>
-    </div>
-
-    <!-- 3D Bioluminescent Swimming Creatures Canvas -->
-    <canvas id="digital-factory-canvas"></canvas>
-
     <!-- Main Navigation Header (Clean Home, About Us, Products, Success Stories, ROI, Contact) -->
     <header class="site-header">
         <nav class="navbar-glass">
             <!-- Brand Logo -->
             <a href="{{ route('home') }}" class="nav-brand">
-                <div class="brand-icon-3d">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                    </svg>
-                </div>
+                <img class="brand-logo-image" src="{{ asset('images/track-tech-logo.svg') }}" alt="Track Tech Solution logo">
                 <span class="brand-title">Track Tech <span class="gradient-text">Solution</span></span>
             </a>
 
             <!-- Desktop Menu -->
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                    <a href="{{ request()->routeIs('home') ? '#hero' : route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" data-scroll-target="hero">Home</a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About Us</a>
+                    <a href="{{ request()->routeIs('home') ? '#about-us' : route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" data-scroll-target="about-us">About Us</a>
                 </li>
                 
                 <!-- Products Dropdown -->
                 <li class="nav-item">
-                    <a href="{{ route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : '' }}">
+                    <a href="{{ request()->routeIs('home') ? '#products' : route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : '' }}" data-scroll-target="products">
                         Products
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
                     </a>
@@ -164,15 +148,19 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('success-stories') }}" class="nav-link {{ request()->routeIs('success-stories') ? 'active' : '' }}">Success Stories</a>
+                    <a href="{{ request()->routeIs('home') ? '#interactive-board' : route('products.index') }}" class="nav-link" data-scroll-target="interactive-board">Solutions</a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ request()->routeIs('home') ? '#roi-calculator' : route('demo') }}" class="nav-link">ROI Calculator</a>
+                    <a href="{{ request()->routeIs('home') ? '#stories-section' : route('success-stories') }}" class="nav-link {{ request()->routeIs('success-stories') ? 'active' : '' }}" data-scroll-target="stories-section">Success Stories</a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact Us</a>
+                    <a href="{{ request()->routeIs('home') ? '#roi-calculator' : route('demo') }}" class="nav-link" data-scroll-target="roi-calculator">ROI Calculator</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ request()->routeIs('home') ? '#contact-section' : route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" data-scroll-target="contact-section">Contact Us</a>
                 </li>
             </ul>
 
@@ -198,12 +186,13 @@
             <button id="mobile-close" style="background:none; border:none; color:var(--text-heading); cursor:pointer; font-size:1.8rem; line-height:1;">&times;</button>
         </div>
         <div style="display:flex; flex-direction:column; gap:0.75rem;">
-            <a href="{{ route('home') }}" class="nav-link">Home</a>
-            <a href="{{ route('about') }}" class="nav-link">About Us</a>
-            <a href="{{ route('products.index') }}" class="nav-link">Products</a>
+            <a href="{{ request()->routeIs('home') ? '#hero' : route('home') }}" class="nav-link">Home</a>
+            <a href="{{ request()->routeIs('home') ? '#about-us' : route('about') }}" class="nav-link">About Us</a>
+            <a href="{{ request()->routeIs('home') ? '#products' : route('products.index') }}" class="nav-link">Products</a>
+            <a href="{{ request()->routeIs('home') ? '#interactive-board' : route('products.index') }}" class="nav-link">Solutions</a>
             <a href="{{ route('success-stories') }}" class="nav-link">Success Stories</a>
             <a href="{{ route('demo') }}" class="nav-link">ROI Calculator & Demo</a>
-            <a href="{{ route('contact') }}" class="nav-link">Contact Us</a>
+            <a href="{{ request()->routeIs('home') ? '#contact-section' : route('contact') }}" class="nav-link">Contact Us</a>
         </div>
         <div style="margin-top:auto;">
             <a href="{{ route('demo') }}" class="btn-3d btn-primary-3d" style="width:100%;">Book 3D Demo</a>
@@ -215,6 +204,13 @@
         @yield('content')
     </main>
 
+    @if(request()->routeIs('contact'))
+        <a class="whatsapp-float" href="https://wa.me/919650613666?text=Hello%20Track%20Tech%20Solution%2C%20I%20would%20like%20to%20discuss%20my%20factory%20project." target="_blank" rel="noopener noreferrer" aria-label="Chat with Track Tech Solution on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.84 11.84 0 0 0 12.06 0C5.52 0 .2 5.31.2 11.85c0 2.09.55 4.13 1.59 5.92L.1 24l6.39-1.67a11.85 11.85 0 0 0 5.57 1.42h.01c6.53 0 11.84-5.32 11.84-11.86 0-3.17-1.23-6.14-3.41-8.39Zm-8.44 18.2h-.01a9.85 9.85 0 0 1-5.02-1.37l-.36-.21-3.79.99 1.01-3.7-.23-.38a9.85 9.85 0 1 1 8.4 4.67Zm5.41-7.39c-.3-.15-1.78-.88-2.05-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.51-1.78-1.69-2.08-.18-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.68-1.64-.93-2.25-.25-.59-.5-.51-.68-.52h-.58c-.2 0-.53.07-.8.38-.27.3-1.03 1-1.03 2.46s1.05 2.85 1.2 3.05c.15.2 2.07 3.16 5.01 4.43.7.3 1.25.48 1.68.62.7.22 1.34.19 1.84.12.56-.08 1.78-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.07-.12-.27-.2-.57-.35Z"></path></svg>
+            <span>WhatsApp</span>
+        </a>
+    @endif
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
@@ -222,13 +218,7 @@
                 <!-- Col 1: Brand & Bio -->
                 <div class="footer-col">
                     <div class="nav-brand" style="margin-bottom:1.25rem;">
-                        <div class="brand-icon-3d">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                                <polyline points="2 17 12 22 22 17"></polyline>
-                                <polyline points="2 12 12 17 22 12"></polyline>
-                            </svg>
-                        </div>
+                        <img class="brand-logo-image" src="{{ asset('images/track-tech-logo.svg') }}" alt="Track Tech Solution logo">
                         <span class="brand-title">Track Tech <span class="gradient-text">Solution</span></span>
                     </div>
                     <p style="font-size:0.94rem; color:var(--text-muted); line-height:1.75; margin-bottom:1.5rem;">
@@ -305,8 +295,13 @@
         <span id="toast-message-text">Your request has been submitted successfully.</span>
     </div>
 
+    <!-- External Libraries: Lenis Smooth Scroll, Three.js & GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <!-- JavaScript Engines -->
-    <script src="{{ asset('js/digital-factory-bg.js') }}"></script>
     <script src="{{ asset('js/hero-factory-3d.js') }}"></script>
     <script src="{{ asset('js/cursor-3d.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>

@@ -7,8 +7,8 @@
 @section('content')
 
 <!-- About Hero -->
-<section style="padding: 4.5rem 0 3rem; position:relative;" 
-         data-bg="#f8fafc" 
+<section class="page-blue-theme" style="padding: 4.5rem 0 3rem; position:relative;" 
+         data-bg="#eef8ff" 
          data-glow-1="rgba(56, 189, 248, 0.25)" 
          data-glow-2="rgba(168, 85, 247, 0.2)" 
          data-glow-3="rgba(14, 165, 233, 0.18)">

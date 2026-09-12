@@ -7,8 +7,8 @@
 <!-- ==========================================
      1. HERO SECTION WITH 3D STAGE & AMBIENT VIDEO
      ========================================== -->
-<section class="hero-section-3d" id="hero" 
-         data-bg="#f8fafc" 
+<section class="hero-section-3d page-blue-theme" id="hero" 
+         data-bg="#eef8ff" 
          data-glow-1="rgba(56, 189, 248, 0.25)" 
          data-glow-2="rgba(168, 85, 247, 0.22)" 
          data-glow-3="rgba(14, 165, 233, 0.2)">
@@ -101,7 +101,35 @@
 </section>
 
 <!-- ==========================================
-     2. MONDAY.COM STYLE LIVE CONTROL BOARD
+     2. SCROLL-DRAWN FACTORY JOURNEY
+     ========================================== -->
+<section class="factory-journey" id="factory-journey" data-bg="#fbfcfa" data-glow-1="rgba(14, 165, 233, 0.12)" data-glow-2="rgba(99, 102, 241, 0.1)" data-glow-3="rgba(2, 132, 199, 0.09)">
+    <div class="factory-journey-surface"></div>
+    <div class="container factory-journey-inner">
+        <div class="factory-journey-intro reveal-on-scroll">
+            <span class="journey-kicker">Track Tech Solutions Journey</span>
+            <h2 class="journey-title">From fabric roll to <span>ready to ship.</span></h2>
+            <p>A continuous digital factory flow where every machine, line, and decision stays connected.</p>
+        </div>
+
+        <div class="journey-track" aria-label="Track Tech production journey">
+            <svg class="journey-route" viewBox="0 0 900 1560" preserveAspectRatio="none" aria-hidden="true">
+                <path class="journey-route-base" d="M450 20 C450 145 180 150 180 290 S720 430 720 570 S180 720 180 860 S720 1000 720 1140 S180 1280 180 1400 S450 1480 450 1540"></path>
+                <path class="journey-route-progress" d="M450 20 C450 145 180 150 180 290 S720 430 720 570 S180 720 180 860 S720 1000 720 1140 S180 1280 180 1400 S450 1480 450 1540"></path>
+            </svg>
+
+            <article class="journey-step journey-step-left reveal-on-scroll" data-step="1"><span class="journey-step-number">01</span><div class="journey-step-copy"><span class="journey-step-label">Fabric</span><h3>Material with a memory.</h3><p>Rolls, lots, and shrinkage stay traceable from the first scan.</p></div><div class="journey-visual"><img src="{{ asset('images/fabric_inventory_real.jpg') }}" alt="Fabric rolls prepared for digital inventory tracking"><span class="journey-visual-tag">Roll intelligence</span></div></article>
+            <article class="journey-step journey-step-right reveal-on-scroll" data-step="2"><span class="journey-step-number">02</span><div class="journey-step-copy"><span class="journey-step-label">Cutting</span><h3>Precision before production.</h3><p>Digital markers and bundles move cleanly into the next operation.</p></div><div class="journey-visual"><img src="{{ asset('images/cutting_room_real.jpg') }}" alt="Digitised cutting room workflow"><span class="journey-visual-tag">Cut plan live</span></div></article>
+            <article class="journey-step journey-step-left reveal-on-scroll" data-step="3"><span class="journey-step-number">03</span><div class="journey-step-copy"><span class="journey-step-label">Sewing</span><h3>Every line finds rhythm.</h3><p>Operators, targets, and WIP connect into one live production view.</p></div><div class="journey-visual"><img src="{{ asset('images/production_tracking_real.jpg') }}" alt="Garment production line with live tracking"><span class="journey-visual-tag">Line sync</span></div></article>
+            <article class="journey-step journey-step-right reveal-on-scroll" data-step="4"><span class="journey-step-number">04</span><div class="journey-step-copy"><span class="journey-step-label">AI Quality</span><h3>Quality sees the detail.</h3><p>Defects become actionable signals before they travel downstream.</p></div><div class="journey-visual"><img src="{{ asset('images/quality_control_real.jpg') }}" alt="Quality control inspection in a garment factory"><span class="journey-visual-tag">Vision assured</span></div></article>
+            <article class="journey-step journey-step-left reveal-on-scroll" data-step="5"><span class="journey-step-number">05</span><div class="journey-step-copy"><span class="journey-step-label">Factory Intelligence</span><h3>The floor thinks together.</h3><p>IoT signals turn machines, people, and performance into decisions.</p></div><div class="journey-visual journey-visual-dashboard"><span class="dashboard-line line-one"></span><span class="dashboard-line line-two"></span><span class="dashboard-node node-one"></span><span class="dashboard-node node-two"></span><span class="journey-visual-tag">IoT command layer</span></div></article>
+            <article class="journey-step journey-step-right reveal-on-scroll" data-step="6"><span class="journey-step-number">06</span><div class="journey-step-copy"><span class="journey-step-label">Ready to Ship</span><h3>Confidence at the dock.</h3><p>One connected story closes the loop from raw material to dispatch.</p></div><div class="journey-visual"><img src="{{ asset('images/production_tracking_real.jpg') }}" alt="Finished production ready for shipment"><span class="journey-visual-tag">Dispatch ready</span></div></article>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     3. MONDAY.COM STYLE LIVE CONTROL BOARD
      ========================================== -->
 <section style="padding: 4rem 0 6rem; position:relative;" id="interactive-board"
          data-bg="#f0fdf4" 

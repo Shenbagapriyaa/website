@@ -10,8 +10,21 @@
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  let width = (canvas.width = canvas.parentElement.clientWidth || 540);
-  let height = (canvas.height = canvas.parentElement.clientHeight || 500);
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  let width = 540;
+  let height = 500;
+
+  function resizeCanvas() {
+    width = canvas.parentElement.clientWidth || 540;
+    height = canvas.parentElement.clientHeight || 500;
+    canvas.width = width * pixelRatio;
+    canvas.height = height * pixelRatio;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  }
+
+  resizeCanvas();
 
   let mouseX = 0;
   let mouseY = 0;
@@ -25,27 +38,27 @@
 
   window.addEventListener('resize', () => {
     if (!canvas.parentElement) return;
-    width = canvas.width = canvas.parentElement.clientWidth;
-    height = canvas.height = canvas.parentElement.clientHeight;
+    resizeCanvas();
   });
 
   // Isometric 3D Projection
   function projectIso(x, y, z, angle) {
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
+    const sceneScale = Math.min(width / 540, height / 520, 1);
+    const cos = Math.cos(0);
+    const sin = Math.sin(0);
 
     const rx = x * cos - z * sin;
     const rz = x * sin + z * cos;
 
-    const isoX = width / 2 + (rx - rz) * 1.3 + mouseX * 20;
-    const isoY = height / 2 + (rx + rz) * 0.65 - y * 1.4 + mouseY * 15;
+    const isoX = width / 2 + (rx - rz) * 1.3 * sceneScale;
+    const isoY = height / 2 + (rx + rz) * 0.65 * sceneScale - y * 1.4 * sceneScale;
 
     return { x: isoX, y: isoY, z: rz };
   }
 
   // Factory Nodes / Production Stages
   const nodes = [
-    { label: 'Fabric Inward (FIM)', x: -100, y: 0, z: -80, color: '#0284c7', icon: '📦', metric: '99.4% Sync' },
+    { label: 'Fabric Inward (FIM)', x: -88, y: 0, z: -58, color: '#0284c7', icon: '📦', metric: '99.4% Sync' },
     { label: 'Auto Cutting Table', x: 0, y: 15, z: -80, color: '#8b5cf6', icon: '✂️', metric: '98.8% Yield' },
     { label: 'Sewing Line Alpha', x: -100, y: 0, z: 60, color: '#0ea5e9', icon: '🧵', metric: '94.2% Eff' },
     { label: 'Sewing Line Beta', x: 0, y: 0, z: 60, color: '#0ea5e9', icon: '🧵', metric: '91.8% Eff' },
@@ -69,7 +82,8 @@
   function drawStage() {
     ctx.clearRect(0, 0, width, height);
     time += 0.02;
-    rotAngle = Math.sin(time * 0.3) * 0.12;
+    rotAngle = Math.sin(time * 0.3) * 0.06;
+    const sceneScale = Math.min(width / 540, height / 520, 1);
 
     // Draw Light Isometric Grid Base
     ctx.strokeStyle = 'rgba(226, 232, 240, 0.75)';
@@ -114,7 +128,7 @@
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.strokeStyle = lineGrad;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = Math.max(1.2, 2 * sceneScale);
       ctx.stroke();
     });
 
@@ -123,7 +137,6 @@
       packet.progress += packet.speed;
       if (packet.progress >= 1) {
         packet.progress = 0;
-        packet.fromNode = Math.floor(Math.random() * (nodes.length - 1));
       }
 
       const n1 = nodes[packet.fromNode];
@@ -133,9 +146,10 @@
 
       const px = p1.x + (p2.x - p1.x) * packet.progress;
       const py = p1.y + (p2.y - p1.y) * packet.progress;
+      const packetPulse = 1 + Math.sin(time * 6 + packet.progress * 8) * 0.25;
 
       ctx.beginPath();
-      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.arc(px, py, Math.max(2.5, 4 * sceneScale) * packetPulse, 0, Math.PI * 2);
       ctx.fillStyle = '#0ea5e9';
       ctx.shadowColor = 'rgba(14, 165, 233, 0.8)';
       ctx.shadowBlur = 8;
@@ -145,13 +159,12 @@
 
     // Draw 3D Stations / Nodes
     nodes.forEach((node, idx) => {
-      const bob = Math.sin(time * 2 + idx) * 4;
-      const pos = projectIso(node.x, node.y + bob, node.z, rotAngle);
+      const pos = projectIso(node.x, node.y, node.z, rotAngle);
 
       // Station Base Shadow
       const shadowPos = projectIso(node.x, 0, node.z, rotAngle);
       ctx.beginPath();
-      ctx.ellipse(shadowPos.x, shadowPos.y, 18, 9, 0, 0, Math.PI * 2);
+      ctx.ellipse(shadowPos.x, shadowPos.y, 18 * sceneScale, 9 * sceneScale, 0, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
       ctx.fill();
 
@@ -161,10 +174,10 @@
 
       // Glowing Node Center
       ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.arc(0, 0, 22 * sceneScale, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = node.color;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = Math.max(1.5, 2.5 * sceneScale);
       ctx.shadowColor = 'rgba(14, 165, 233, 0.25)';
       ctx.shadowBlur = 12;
       ctx.fill();
@@ -172,19 +185,39 @@
       ctx.shadowBlur = 0;
 
       // Icon
-      ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+      ctx.font = `${Math.max(10, 14 * sceneScale)}px "Plus Jakarta Sans", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(node.icon, 0, 1);
 
-      // Label & Telemetry Badge
-      ctx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = '#0f172a';
-      ctx.fillText(node.label, 0, -28);
-
-      ctx.font = '9px "Space Grotesk", sans-serif';
-      ctx.fillStyle = node.color;
-      ctx.fillText(node.metric, 0, 32);
+      // Compact name plates keep the moving factory readable without collisions.
+      const labelOffsets = [
+        { x: -52, y: -35 },
+        { x: 28, y: -29 },
+        { x: -38, y: 32 },
+        { x: 28, y: 34 },
+        { x: 28, y: -29 },
+        { x: -38, y: -35 }
+      ];
+      const labelNames = ['Fabric Inward', 'Auto Cutting', 'Sewing Alpha', 'Sewing Beta', 'AI Quality', 'Cloud Hub'];
+      const labelOffset = labelOffsets[idx];
+      const label = labelNames[idx];
+      const labelFontSize = Math.max(7, 9 * sceneScale);
+      ctx.font = `700 ${labelFontSize}px "Plus Jakarta Sans", sans-serif`;
+      const labelWidth = ctx.measureText(label).width + 10 * sceneScale;
+      const labelX = labelOffset.x * sceneScale;
+      const labelY = labelOffset.y * sceneScale;
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.58)';
+      ctx.lineWidth = Math.max(0.6, sceneScale);
+      ctx.beginPath();
+      ctx.roundRect(labelX - 5 * sceneScale, labelY - labelFontSize - 3 * sceneScale, labelWidth, labelFontSize + 7 * sceneScale, 5 * sceneScale);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#172033';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(label, labelX, labelY);
 
       ctx.restore();
     });

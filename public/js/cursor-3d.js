@@ -36,7 +36,7 @@
     cursorGlow.style.transform = `translate3d(${mouseX - 180}px, ${mouseY - 180}px, 0)`;
   });
 
-  // Shockwave ring + pastel bubble burst
+  // Small click feedback without a large bubble burst.
   function createClickExplosion(x, y) {
     // 1. Expanding Sonic Shockwave Ring
     const wave = document.createElement('div');
@@ -45,17 +45,17 @@
     wave.style.top = `${y}px`;
     document.body.appendChild(wave);
 
-    setTimeout(() => wave.remove(), 750);
+    setTimeout(() => wave.remove(), 500);
 
-    // 2. Iridescent Rainbow Bubbles with Physics
-    const bubbleCount = 10 + Math.floor(Math.random() * 4);
+    // 2. Compact bubbles
+    const bubbleCount = 4 + Math.floor(Math.random() * 3);
     for (let i = 0; i < bubbleCount; i++) {
       const bubble = document.createElement('div');
       bubble.className = 'cursor-bubble-particle';
 
-      const size = 12 + Math.random() * 24;
+      const size = 6 + Math.random() * 8;
       const angle = (Math.PI * 2 * i) / bubbleCount + (Math.random() - 0.5) * 0.6;
-      const distance = 40 + Math.random() * 70;
+      const distance = 22 + Math.random() * 32;
       const tx = Math.cos(angle) * distance;
       const ty = Math.sin(angle) * distance - (20 + Math.random() * 35); // Float upwards
 
@@ -67,9 +67,8 @@
       bubble.style.setProperty('--ty', `${ty}px`);
 
       const hues = [
-        'radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.98), rgba(56, 189, 248, 0.6) 55%, rgba(168, 85, 247, 0.7) 100%)',
-        'radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.98), rgba(168, 85, 247, 0.6) 55%, rgba(236, 72, 153, 0.7) 100%)',
-        'radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.98), rgba(14, 165, 233, 0.6) 55%, rgba(16, 185, 129, 0.7) 100%)'
+        'radial-gradient(circle at 35% 35%, #ffffff, rgba(56, 189, 248, 0.82) 65%, rgba(2, 132, 199, 0.9))',
+        'radial-gradient(circle at 35% 35%, #ffffff, rgba(14, 165, 233, 0.82) 65%, rgba(2, 132, 199, 0.9))'
       ];
       bubble.style.background = hues[Math.floor(Math.random() * hues.length)];
 
@@ -77,7 +76,7 @@
 
       setTimeout(() => {
         if (bubble.parentElement) bubble.remove();
-      }, 900);
+      }, 650);
     }
   }
 
@@ -96,7 +95,7 @@
     ringX += (mouseX - ringX) * 0.18;
     ringY += (mouseY - ringY) * 0.18;
 
-    const scale = isHovered ? (isClicking ? 1.25 : 1.55) : (isClicking ? 0.75 : 1);
+    const scale = isHovered ? (isClicking ? 1.05 : 1.2) : (isClicking ? 0.85 : 1);
     cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) scale(${scale})`;
 
     requestAnimationFrame(renderCursor);

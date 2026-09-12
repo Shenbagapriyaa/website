@@ -1,11 +1,34 @@
 /**
- * Track Tech Solution - 3D Bioluminescent Fluid Koi & Caustic Canvas Engine
- * Inspired by peachweb.io luxury organic aesthetics.
- * 60fps GPU-optimized Canvas with realistic inverse kinematics, fins, & ripples.
+ * Track Tech Solution - Industrial Textile Blueprint Motion Engine
+ * 
+ * Features:
+ *  - Dynamic SVG / Canvas vector lines that literally DRAW themselves as the user scrolls
+ *  - Soft production routes with restrained copper and green telemetry accents
+ *  - Interactive mouse thread trail with a warm industrial glow
+ *  - Subtle architectural blueprint grid & digital telemetry nodes
+ *  - 100% lightweight, crystal-clear, zero clunky 3D obstruction
  */
 
 (function() {
   'use strict';
+
+  // Initialize Lenis for smooth scroll if available
+  let lenis = null;
+  if (typeof Lenis !== 'undefined') {
+    lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 1.8
+    });
+    window.lenisInstance = lenis;
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }
 
   const canvas = document.getElementById('digital-factory-canvas');
   if (!canvas) return;
@@ -14,342 +37,365 @@
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  let mouseX = width / 2;
-  let mouseY = height / 2;
-  let mouseActive = false;
-
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
+    initDrawingPaths();
   });
 
+  // Mouse Interaction Physics
+  let mouseX = width * 0.5;
+  let mouseY = height * 0.5;
+  let targetMouseX = width * 0.5;
+  let targetMouseY = height * 0.5;
+  let mouseActive = false;
+
+  const mouseTrail = [];
+  const MAX_TRAIL = 18;
+
   window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    targetMouseX = e.clientX;
+    targetMouseY = e.clientY;
     mouseActive = true;
+
+    mouseTrail.push({
+      x: e.clientX,
+      y: e.clientY,
+      age: 0,
+      radius: 3 + Math.random() * 4
+    });
+
+    if (mouseTrail.length > MAX_TRAIL) {
+      mouseTrail.shift();
+    }
   });
 
   window.addEventListener('mouseleave', () => {
     mouseActive = false;
   });
 
-  // Floating Ambient Water Bubbles
-  const ambientBubbles = [];
-  for (let i = 0; i < 18; i++) {
-    ambientBubbles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      radius: 4 + Math.random() * 12,
-      vy: 0.3 + Math.random() * 0.7,
-      vx: (Math.random() - 0.5) * 0.4,
-      opacity: 0.15 + Math.random() * 0.35,
-      pulse: Math.random() * Math.PI * 2
-    });
+  // Smooth Scroll Position & Velocity Tracking
+  let currentScroll = 0;
+  let targetScroll = 0;
+  let scrollVelocity = 0;
+  let lastScrollPos = 0;
+
+  function getScrollTop() {
+    return lenis ? lenis.scroll : (window.scrollY || window.pageYOffset || 0);
   }
 
-  // Expanding Water Ripples
-  const ripples = [];
-  function addRipple(x, y, maxR = 90, color = 'rgba(14, 165, 233, 0.35)') {
-    ripples.push({
-      x,
-      y,
-      radius: 6,
-      maxRadius: maxR,
-      opacity: 0.65,
+  // Floating Drawing Sparks
+  const sparks = [];
+  function addSpark(x, y, color = '#0284c7') {
+    if (sparks.length > 80) sparks.shift();
+    sparks.push({
+      x: x + (Math.random() - 0.5) * 10,
+      y: y + (Math.random() - 0.5) * 10,
+      vx: (Math.random() - 0.5) * 2.2,
+      vy: (Math.random() - 0.5) * 2.2 - 0.5,
+      alpha: 0.9,
+      size: 1.5 + Math.random() * 2.5,
       color: color
     });
   }
 
-  window.addEventListener('click', (e) => {
-    addRipple(e.clientX, e.clientY, 130, 'rgba(139, 92, 246, 0.45)');
-    addRipple(e.clientX, e.clientY, 180, 'rgba(14, 165, 233, 0.35)');
-  });
+  // =========================================================================
+  // 1. DYNAMIC SCROLL VECTOR DRAWING PATHS
+  // =========================================================================
+  let drawingTracks = [];
 
-  // Bioluminescent Fluid Creature / Koi Class
-  class FluidCreature {
-    constructor(isHero = false) {
-      this.isHero = isHero;
-      this.numJoints = isHero ? 18 : 13;
-      this.jointSpacing = isHero ? 14 : 10;
-      this.baseSize = isHero ? 20 : 12;
-      this.spine = [];
-      this.angles = [];
-
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 2;
-      this.vy = (Math.random() - 0.5) * 2;
-      this.angle = Math.random() * Math.PI * 2;
-      this.targetAngle = this.angle;
-      this.speed = isHero ? 2.6 : 1.9;
-      this.wigglePhase = Math.random() * Math.PI * 2;
-      this.wiggleSpeed = 0.085 + Math.random() * 0.035;
-
-      // Luxury Sky Blue & Lavender Palettes
-      const palettes = [
-        {
-          head: 'rgba(2, 132, 199, 0.85)',
-          body: 'rgba(14, 165, 233, 0.7)',
-          tail: 'rgba(139, 92, 246, 0.6)',
-          fin: 'rgba(56, 189, 248, 0.38)',
-          glow: 'rgba(14, 165, 233, 0.28)'
-        },
-        {
-          head: 'rgba(124, 58, 237, 0.85)',
-          body: 'rgba(139, 92, 246, 0.7)',
-          tail: 'rgba(236, 72, 153, 0.6)',
-          fin: 'rgba(192, 132, 252, 0.38)',
-          glow: 'rgba(139, 92, 246, 0.28)'
-        },
-        {
-          head: 'rgba(14, 165, 233, 0.85)',
-          body: 'rgba(99, 102, 241, 0.7)',
-          tail: 'rgba(168, 85, 247, 0.6)',
-          fin: 'rgba(125, 211, 252, 0.35)',
-          glow: 'rgba(56, 189, 248, 0.25)'
+  function initDrawingPaths() {
+    drawingTracks = [
+      // Track 1: Fabric roll path
+      {
+        color: '#0284c7',
+        glowColor: 'rgba(14, 165, 233, 0.28)',
+        lineWidth: 1.6,
+        speed: 1.0,
+        phase: 0,
+        generatePoints: (progress, time) => {
+          const pts = [];
+          const numSteps = 45;
+          const totalY = height * 1.3;
+          for (let i = 0; i <= numSteps; i++) {
+            const t = i / numSteps;
+            const y = t * totalY - height * 0.15;
+            const waveX = Math.sin(t * Math.PI * 4 + time * 0.8) * (width * 0.12);
+            const x = width * 0.18 + waveX;
+            pts.push({ x, y });
+          }
+          return pts;
         }
-      ];
-      this.palette = palettes[Math.floor(Math.random() * palettes.length)];
-
-      for (let i = 0; i < this.numJoints; i++) {
-        this.spine.push({ x: this.x - i * this.jointSpacing, y: this.y });
-        this.angles.push(0);
-      }
-    }
-
-    update() {
-      this.wigglePhase += this.wiggleSpeed;
-
-      // Intelligent Wander & Seek Dynamics
-      if (mouseActive) {
-        const dx = mouseX - this.x;
-        const dy = mouseY - this.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 480 && dist > 70) {
-          this.targetAngle = Math.atan2(dy, dx);
-        } else if (dist <= 70) {
-          this.targetAngle = Math.atan2(-dy, -dx); // Gentle dispersal
+      },
+      // Track 2: Production flow path
+      {
+        color: '#65a30d',
+        glowColor: 'rgba(101, 163, 13, 0.28)',
+        lineWidth: 1.5,
+        speed: 1.2,
+        phase: Math.PI * 0.5,
+        generatePoints: (progress, time) => {
+          const pts = [];
+          const numSteps = 45;
+          const totalY = height * 1.3;
+          for (let i = 0; i <= numSteps; i++) {
+            const t = i / numSteps;
+            const y = t * totalY - height * 0.15;
+            const waveX = Math.cos(t * Math.PI * 3.5 - time * 0.6) * (width * 0.14);
+            const x = width * 0.82 + waveX;
+            pts.push({ x, y });
+          }
+          return pts;
         }
-      } else {
-        if (Math.random() < 0.02) {
-          this.targetAngle += (Math.random() - 0.5) * 1.6;
+      },
+      // Track 3: Interconnected workstation path
+      {
+        color: '#6366f1',
+        glowColor: 'rgba(180, 83, 9, 0.25)',
+        lineWidth: 1.35,
+        speed: 0.9,
+        phase: Math.PI,
+        generatePoints: (progress, time) => {
+          const pts = [];
+          const numSteps = 50;
+          const totalY = height * 1.3;
+          for (let i = 0; i <= numSteps; i++) {
+            const t = i / numSteps;
+            const y = t * totalY - height * 0.15;
+            const weave = Math.sin(t * Math.PI * 6 + time * 0.9) * (width * 0.08);
+            const x = (width * 0.35) + (t * width * 0.3) + weave;
+            pts.push({ x, y });
+          }
+          return pts;
+        }
+      },
+      // Track 4: Quality inspection scanner
+      {
+        color: '#84cc16',
+        glowColor: 'rgba(132, 204, 22, 0.22)',
+        lineWidth: 1.1,
+        speed: 1.4,
+        phase: Math.PI * 1.5,
+        generatePoints: (progress, time) => {
+          const pts = [];
+          const numSteps = 35;
+          const baseY = height * 0.48 + Math.sin(time + progress * 8) * 80;
+          for (let i = 0; i <= numSteps; i++) {
+            const t = i / numSteps;
+            const x = t * width;
+            const y = baseY + Math.sin(t * Math.PI * 5 + time * 1.2) * 35;
+            pts.push({ x, y });
+          }
+          return pts;
         }
       }
-
-      // Smooth Angular Steering
-      let diff = this.targetAngle - this.angle;
-      while (diff < -Math.PI) diff += Math.PI * 2;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      this.angle += diff * 0.045;
-
-      // Propulsion
-      const currentSpeed = this.speed + Math.sin(this.wigglePhase) * 0.7;
-      this.x += Math.cos(this.angle) * currentSpeed;
-      this.y += Math.sin(this.angle) * currentSpeed;
-
-      // Wrap Screen Bounds
-      const margin = 100;
-      if (this.x < -margin) this.x = width + margin;
-      if (this.x > width + margin) this.x = -margin;
-      if (this.y < -margin) this.y = height + margin;
-      if (this.y > height + margin) this.y = -margin;
-
-      // Inverse Kinematics for Organic Spine
-      this.spine[0] = { x: this.x, y: this.y };
-      for (let i = 1; i < this.numJoints; i++) {
-        const prev = this.spine[i - 1];
-        const curr = this.spine[i];
-        let ang = Math.atan2(curr.y - prev.y, curr.x - prev.x);
-
-        // Sinusoidal wave through spine
-        const wave = Math.sin(this.wigglePhase - i * 0.42) * 0.22;
-        ang += wave;
-
-        curr.x = prev.x + Math.cos(ang) * this.jointSpacing;
-        curr.y = prev.y + Math.sin(ang) * this.jointSpacing;
-        this.angles[i] = ang;
-      }
-
-      // Tail ripple trail
-      if (Math.random() < 0.016) {
-        const tail = this.spine[this.numJoints - 1];
-        addRipple(tail.x, tail.y, 55, this.palette.glow);
-      }
-    }
-
-    draw() {
-      ctx.save();
-
-      // Bioluminescent Halo
-      const head = this.spine[0];
-      const halo = ctx.createRadialGradient(head.x, head.y, 2, head.x, head.y, this.baseSize * 4.5);
-      halo.addColorStop(0, this.palette.glow);
-      halo.addColorStop(1, 'transparent');
-      ctx.fillStyle = halo;
-      ctx.beginPath();
-      ctx.arc(head.x, head.y, this.baseSize * 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Flowing Pectoral Fins (Left & Right)
-      if (this.spine.length > 3) {
-        const finJoint = this.spine[2];
-        const finAngle = this.angles[2] || this.angle;
-        const finWave = Math.sin(this.wigglePhase) * 0.45;
-
-        ctx.fillStyle = this.palette.fin;
-        // Left Fin
-        ctx.beginPath();
-        const lx = finJoint.x + Math.cos(finAngle + Math.PI / 2) * (this.baseSize * 1.3);
-        const ly = finJoint.y + Math.sin(finAngle + Math.PI / 2) * (this.baseSize * 1.3);
-        ctx.ellipse(lx, ly, this.baseSize * 1.7, this.baseSize * 0.75, finAngle + Math.PI / 3 + finWave, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Right Fin
-        ctx.beginPath();
-        const rx = finJoint.x + Math.cos(finAngle - Math.PI / 2) * (this.baseSize * 1.3);
-        const ry = finJoint.y + Math.sin(finAngle - Math.PI / 2) * (this.baseSize * 1.3);
-        ctx.ellipse(rx, ry, this.baseSize * 1.7, this.baseSize * 0.75, finAngle - Math.PI / 3 - finWave, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Smooth Organic Tapered Body
-      const leftPts = [];
-      const rightPts = [];
-
-      for (let i = 0; i < this.numJoints; i++) {
-        const pt = this.spine[i];
-        const ang = (this.angles[i] || this.angle) + Math.PI / 2;
-        const progress = i / (this.numJoints - 1);
-        let r = this.baseSize * (1 - progress * 0.78);
-        if (i === 0) r *= 0.9;
-
-        leftPts.push({
-          x: pt.x + Math.cos(ang) * r,
-          y: pt.y + Math.sin(ang) * r
-        });
-        rightPts.push({
-          x: pt.x - Math.cos(ang) * r,
-          y: pt.y - Math.sin(ang) * r
-        });
-      }
-
-      ctx.beginPath();
-      ctx.moveTo(leftPts[0].x, leftPts[0].y);
-      for (let i = 1; i < leftPts.length; i++) {
-        ctx.lineTo(leftPts[i].x, leftPts[i].y);
-      }
-      const tail = this.spine[this.numJoints - 1];
-      ctx.lineTo(tail.x, tail.y);
-
-      for (let i = rightPts.length - 1; i >= 0; i--) {
-        ctx.lineTo(rightPts[i].x, rightPts[i].y);
-      }
-      ctx.closePath();
-
-      // Fluid Gradient Body Fill
-      const bodyGrad = ctx.createLinearGradient(
-        this.spine[0].x,
-        this.spine[0].y,
-        tail.x,
-        tail.y
-      );
-      bodyGrad.addColorStop(0, this.palette.head);
-      bodyGrad.addColorStop(0.5, this.palette.body);
-      bodyGrad.addColorStop(1, this.palette.tail);
-
-      ctx.fillStyle = bodyGrad;
-      ctx.fill();
-
-      // Caustic Spine Highlight Line
-      ctx.beginPath();
-      ctx.moveTo(this.spine[0].x, this.spine[0].y);
-      for (let i = 1; i < this.numJoints - 2; i++) {
-        ctx.lineTo(this.spine[i].x, this.spine[i].y);
-      }
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.lineWidth = this.baseSize * 0.25;
-      ctx.lineCap = 'round';
-      ctx.stroke();
-
-      // Translucent Caudal Tail Fin
-      const tailAng = this.angles[this.numJoints - 1] || this.angle;
-      const tailWiggle = Math.sin(this.wigglePhase * 1.3) * 0.6;
-      ctx.fillStyle = this.palette.fin;
-      ctx.beginPath();
-      ctx.ellipse(
-        tail.x - Math.cos(tailAng) * (this.baseSize * 0.9),
-        tail.y - Math.sin(tailAng) * (this.baseSize * 0.9),
-        this.baseSize * 2.2,
-        this.baseSize * 0.9,
-        tailAng + tailWiggle,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-
-      ctx.restore();
-    }
+    ];
   }
 
-  // Create School of Swimming Creatures
-  const creatures = [];
-  const creatureCount = Math.min(Math.floor(window.innerWidth / 200) + 4, 10);
-  for (let i = 0; i < creatureCount; i++) {
-    creatures.push(new FluidCreature(i === 0)); // 1st is Hero Creature
+  initDrawingPaths();
+
+  // Draw Smooth Bezier Path from Array of Points
+  function drawSmoothLine(ctx, points, maxRatio = 1.0) {
+    if (!points || points.length < 2) return null;
+
+    const totalSegments = points.length - 1;
+    const activeSegments = Math.max(Math.floor(totalSegments * maxRatio), 1);
+    const remainder = (totalSegments * maxRatio) - activeSegments;
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    for (let i = 1; i < activeSegments; i++) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const cx = (prev.x + curr.x) / 2;
+      const cy = (prev.y + curr.y) / 2;
+      ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
+    }
+
+    // Interpolate last partial segment
+    const lastIdx = activeSegments;
+    if (lastIdx < points.length) {
+      const p1 = points[lastIdx - 1];
+      const p2 = points[lastIdx];
+      const partialX = p1.x + (p2.x - p1.x) * remainder;
+      const partialY = p1.y + (p2.y - p1.y) * remainder;
+      ctx.lineTo(partialX, partialY);
+      return { x: partialX, y: partialY };
+    }
+
+    const end = points[points.length - 1];
+    ctx.lineTo(end.x, end.y);
+    return end;
   }
 
-  // Animation Loop
-  function render() {
+  // =========================================================================
+  // 2. MAIN 60-120FPS DRAWING ANIMATION LOOP
+  // =========================================================================
+  let lastTime = performance.now();
+
+  function render(now) {
+    const time = now * 0.001;
+    const dt = now - lastTime;
+    lastTime = now;
+
+    // Smooth scroll interpolation
+    targetScroll = getScrollTop();
+    const delta = targetScroll - lastScrollPos;
+    scrollVelocity = scrollVelocity * 0.85 + delta * 0.15;
+    lastScrollPos = targetScroll;
+
+    currentScroll += (targetScroll - currentScroll) * 0.09;
+
+    const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+    const scrollRatio = Math.min(Math.max(currentScroll / maxScroll, 0), 1);
+
+    // Mouse Lerp
+    mouseX += (targetMouseX - mouseX) * 0.08;
+    mouseY += (targetMouseY - mouseY) * 0.08;
+
     ctx.clearRect(0, 0, width, height);
 
-    // Draw Ambient Rising Bubbles
-    ambientBubbles.forEach(b => {
-      b.y -= b.vy;
-      b.x += b.vx;
-      b.pulse += 0.03;
-      if (b.y < -30) {
-        b.y = height + 30;
-        b.x = Math.random() * width;
+    // 1. Fine drafting grid, inspired by factory floor plans.
+    const dotSpacing = 48;
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.055)';
+    for (let x = dotSpacing; x < width; x += dotSpacing) {
+      for (let y = dotSpacing; y < height; y += dotSpacing) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1.0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // 2. Animate and Draw Scroll Vector Tracks ("Draw aagura effect")
+    drawingTracks.forEach((track, index) => {
+      // Dynamic draw ratio based on scroll position + subtle continuous breathing
+      const baseRatio = Math.min(0.25 + scrollRatio * 0.75 + Math.sin(time * 0.6 + index) * 0.05, 1.0);
+      const points = track.generatePoints(scrollRatio, time);
+
+      // Deflect points if mouse is nearby
+      if (mouseActive) {
+        points.forEach(pt => {
+          const dx = pt.x - mouseX;
+          const dy = pt.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 180) {
+            const force = (1 - dist / 180) * 35;
+            pt.x += (dx > 0 ? 1 : -1) * force;
+            pt.y += (dy > 0 ? 1 : -1) * force * 0.5;
+          }
+        });
       }
 
+      // Draw faint background ghost guide line
       ctx.save();
       ctx.beginPath();
-      ctx.arc(b.x, b.y, b.radius + Math.sin(b.pulse) * 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(14, 165, 233, ${b.opacity * 0.25})`;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${b.opacity * 0.7})`;
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        const prev = points[i - 1];
+        const curr = points[i];
+        ctx.quadraticCurveTo(prev.x, prev.y, (prev.x + curr.x) / 2, (prev.y + curr.y) / 2);
+      }
+      ctx.strokeStyle = 'rgba(226, 232, 240, 0.18)';
       ctx.lineWidth = 1;
-      ctx.fill();
+      ctx.setLineDash([4, 8]);
       ctx.stroke();
       ctx.restore();
+
+      // Draw Active Glowing Solid Draw Line
+      ctx.save();
+      ctx.shadowColor = track.glowColor;
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = track.color;
+      ctx.lineWidth = track.lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const drawHead = drawSmoothLine(ctx, points, baseRatio);
+      ctx.stroke();
+      ctx.restore();
+
+      // Glowing Pen / Laser Tip at active draw head
+      if (drawHead) {
+        ctx.save();
+        // Outer halo
+        const halo = ctx.createRadialGradient(drawHead.x, drawHead.y, 2, drawHead.x, drawHead.y, 16);
+        halo.addColorStop(0, track.color);
+        halo.addColorStop(0.5, track.glowColor);
+        halo.addColorStop(1, 'transparent');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(drawHead.x, drawHead.y, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core white dot
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(drawHead.x, drawHead.y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Emit sparks on movement
+        if (Math.abs(scrollVelocity) > 0.5 || Math.random() < 0.25) {
+          addSpark(drawHead.x, drawHead.y, track.color);
+        }
+      }
     });
 
-    // Draw Water Ripples
-    for (let i = ripples.length - 1; i >= 0; i--) {
-      const rip = ripples[i];
-      rip.radius += 1.4;
-      rip.opacity -= 0.011;
+    // 3. Update & Draw Spark Particles
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.alpha -= 0.018;
 
-      if (rip.opacity <= 0) {
-        ripples.splice(i, 1);
+      if (s.alpha <= 0) {
+        sparks.splice(i, 1);
         continue;
       }
 
+      ctx.save();
+      ctx.fillStyle = s.color;
+      ctx.globalAlpha = s.alpha;
+      ctx.shadowColor = s.color;
+      ctx.shadowBlur = 6;
       ctx.beginPath();
-      ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
-      ctx.strokeStyle = rip.color.replace(/[\d\.]+\)$/, `${rip.opacity})`);
-      ctx.lineWidth = 1.8;
-      ctx.stroke();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
 
-    // Update & Draw Swimming Creatures
-    creatures.forEach(c => {
-      c.update();
-      c.draw();
-    });
+    // 4. Interactive Mouse Trail Sketching
+    if (mouseTrail.length > 2) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(mouseTrail[0].x, mouseTrail[0].y);
+      for (let i = 1; i < mouseTrail.length; i++) {
+        const p1 = mouseTrail[i - 1];
+        const p2 = mouseTrail[i];
+        const cx = (p1.x + p2.x) / 2;
+        const cy = (p1.y + p2.y) / 2;
+        ctx.quadraticCurveTo(p1.x, p1.y, cx, cy);
+      }
+      ctx.strokeStyle = 'rgba(14, 165, 233, 0.28)';
+      ctx.lineWidth = 1.8;
+      ctx.lineCap = 'round';
+      ctx.shadowColor = 'rgba(14, 165, 233, 0.28)';
+      ctx.shadowBlur = 7;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Age mouse trail
+    for (let i = mouseTrail.length - 1; i >= 0; i--) {
+      mouseTrail[i].age += 1;
+      if (mouseTrail[i].age > 18) {
+        mouseTrail.splice(i, 1);
+      }
+    }
 
     requestAnimationFrame(render);
   }
 
-  render();
+  requestAnimationFrame(render);
 })();
